@@ -5,7 +5,8 @@ import 'package:get/get.dart';
 
 
 
-void main (){
+void main () async {
+
  runApp(ProviderScope(child: Home()));
 
 }
