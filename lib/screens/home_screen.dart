@@ -95,15 +95,22 @@ class HomeScreen extends StatelessWidget {
             text: 'Game',
             ),
                 Tab(
-                  text: 'Flutter',
+                  text: 'Hollywood',
                 ),
           ]),
         ),
-          body: TabBarView(
-              children: [
-                TabBarWidget('game'),
-                TabBarWidget('flutter'),
-          ])
+          body: Column(
+            children: [
+              TextFormField(),
+                           Expanded(
+                child: TabBarView(
+                    children: [
+                      TabBarWidget('game'),
+                      TabBarWidget('hollywood'),
+                ]),
+              ),
+            ],
+          )
       ),
     );
   }
