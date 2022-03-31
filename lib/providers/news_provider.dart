@@ -1,4 +1,5 @@
 import 'package:dio/dio.dart';
+import 'package:flutter/cupertino.dart';
 import 'package:flutter_new_project/api.dart';
 import 'package:flutter_new_project/models/news.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -67,3 +68,4 @@ class SearchNewsProvider{
 
 
 }
+
