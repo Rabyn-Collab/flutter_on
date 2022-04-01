@@ -18,7 +18,7 @@ class Home extends StatelessWidget {
   Widget build(BuildContext context) {
     return GetMaterialApp(
       debugShowCheckedModeBanner: false,
-      home: Counter(),
+      home: HomeScreen(),
     );
   }
 }
