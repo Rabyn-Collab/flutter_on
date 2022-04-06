@@ -39,6 +39,7 @@ dependencies:
   flutter_riverpod: ^1.0.3
   dio: ^4.0.4
   webview_flutter: ^3.0.1
+  flutter_offline: ^2.1.0
 
 dev_dependencies:
   flutter_test:
