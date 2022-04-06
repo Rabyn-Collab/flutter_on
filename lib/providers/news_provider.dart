@@ -82,8 +82,19 @@ class SearchNewsProvider extends  StateNotifier<List<News>>{
           }
       )
       );
-      final data = (response.data['articles'] as List).map((e) => News.fromJson(e)).toList();
-      state = data;
+      if(response.data['status'] == 'No matches for your search.'){
+            state =  [News(
+                title: 'no title',
+                summary: '',
+                author:'',
+                link: '',
+                media: '',
+                published_date:'')];
+      }else{
+        final data = (response.data['articles'] as List).map((e) => News.fromJson(e)).toList();
+        state = data;
+      }
+
     } on DioError catch (e){
       print(e);
     }

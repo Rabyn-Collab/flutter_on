@@ -26,73 +26,59 @@ class Home extends StatelessWidget {
 
 class Counter extends StatelessWidget {
 
+
+
   @override
   Widget build(BuildContext context) {
+    print('re-build');
     return Scaffold(
-      body: Consumer(
+      body: Center(
+        child: Consumer(
           builder: (context, ref, child) {
-            final count = ref.watch(counterProvider);
-            print(count.count);
-            print(count.status);
+            final number = ref.watch(countProvider).number;
             return Column(
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
-                Text('${count.count}', style: TextStyle(fontSize: 50),),
+                Text('$number', style: TextStyle(fontSize: 45),),
                 Row(
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: [
-                  TextButton(
-                      onPressed: (){
-                        ref.read(counterProvider.notifier).increment();
-                      }, child: Text('add')),
-                  TextButton(
-                      onPressed: (){
-                      }, child: Text('minus')),
+                    TextButton(
+                        onPressed: () {
+                        ref.read(countProvider).increment();
+                        }, child: Text('increment')),
+                    TextButton(
+                        onPressed: () {
+                          ref.read(countProvider).decrement();
+                        }, child: Text('decrement')),
                   ],
-                ),
+                )
               ],
             );
           }
+        ),
       ),
     );
   }
 }
 
 
-class Count{
-  int count;
-  bool status;
 
-  Count({required this.count, required this.status});
-  Count.intiState(): status= false,count=0;
+final countProvider = ChangeNotifierProvider((ref) => CountProvider());
 
+class  CountProvider extends  ChangeNotifier{
 
-  Count copyWith({int? count, bool? status}){
-    return Count(
-        count: count ?? this.count,
-        status: status ?? this.status
-    );
-  }
-}
-
-final counterProvider = StateNotifierProvider<CounterProvider, Count>((ref) =>CounterProvider());
-
-class CounterProvider extends StateNotifier<Count>{
-  CounterProvider() : super(Count.intiState()){
-    increment();
-  }
-
+  int number = 0;
 
 
   void increment(){
-    state = state.copyWith(
-      count: state.count + 1,
-      status: true
-    );
+     number++;
+     notifyListeners();
   }
 
-
+  void decrement(){
+    number--;
+    notifyListeners();
+  }
 
 }
-
-

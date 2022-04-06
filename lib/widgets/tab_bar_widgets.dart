@@ -25,42 +25,45 @@ class TabBarWidget extends StatelessWidget {
                           itemCount: data.length,
                           itemBuilder: (context, index){
                             return Container(
-                              decoration: BoxDecoration(
-                                  border: Border.all(color: Colors.black)
-                              ),
                               margin: EdgeInsets.only(right: 10),
                               height: 250,
-                              width: 600,
-                              child: Row(
+                              width: 300,
+                              child: Stack(
                                 children: [
-                                  CachedNetworkImage(
-                                      color: Colors.black54,
-                                      colorBlendMode: BlendMode.darken,
-                                      errorWidget: (context, image, url){
-                                        return Image.asset('assets/images/no-image.jpg',
-                                          fit: BoxFit.cover,);
-                                      },
-                                      height: 250,
-                                      width: 200,
-                                      fit: BoxFit.cover,
-                                      imageUrl:  data[index].media
+                                  ClipRRect(
+                                    borderRadius: BorderRadius.circular(17),
+                                    child: CachedNetworkImage(
+                                        color: Colors.black54,
+                                        colorBlendMode: BlendMode.darken,
+                                        errorWidget: (context, image, url){
+                                          return Image.asset('assets/images/no-image.jpg',
+                                            fit: BoxFit.cover,);
+                                        },
+                                        height: 250,
+                                        width: double.infinity,
+                                        fit: BoxFit.cover,
+                                        imageUrl:  data[index].media
+                                    ),
                                   ),
-                                  SizedBox(width: 10,),
-                                  Expanded(
+                                  Container(
+                                    margin: EdgeInsets.only(top: 100),
+                                    padding: EdgeInsets.symmetric(horizontal: 10),
                                     child: Column(
                                       crossAxisAlignment: CrossAxisAlignment.start,
-                                      mainAxisAlignment: MainAxisAlignment.spaceAround,
                                       children: [
                                         Text(data[index].title,
                                           maxLines: 1,
-                                          style: TextStyle(fontSize: 17,),),
+                                          style: TextStyle(fontSize: 15, color: Colors.white),),
                                         SizedBox(height: 17,),
                                         Text(data[index].summary,
-                                          maxLines: 5,
+                                          maxLines: 2,
                                           style: TextStyle(
                                               fontSize: 17,
-                                              fontWeight: FontWeight.bold),),
-                                        Text(data[index].author)
+                                              fontWeight: FontWeight.bold, color: Colors.white),),
+                                        SizedBox(height: 15,),
+                                        Container(
+                                            width: double.infinity,
+                                            child: Text(data[index].author, style: TextStyle(color: Colors.white), overflow: TextOverflow.ellipsis,))
                                       ],
                                     ),
                                   ),
