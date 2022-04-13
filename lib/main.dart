@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_new_project/screens/home_screen.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:get/get.dart';
 
@@ -17,7 +18,7 @@ class Home extends StatelessWidget {
   Widget build(BuildContext context) {
     return GetMaterialApp(
       debugShowCheckedModeBanner: false,
-
+     home: HomeScreen(),
     );
   }
 }

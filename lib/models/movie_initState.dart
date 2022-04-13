@@ -1,8 +1,7 @@
-
-
-
 import 'package:flutter_new_project/api.dart';
 import 'package:flutter_new_project/models/movie.dart';
+
+
 
 class MovieState{
   late String apiPath;

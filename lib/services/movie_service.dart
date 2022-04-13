@@ -30,7 +30,6 @@ class MovieService {
      final response = await dio.get(apiPath, queryParameters: {
        'api_key': '2a0f926961d00c667e191a21c14461f8',
        'page': page,
-       'language': 'en-US',
        'query': query
      });
 

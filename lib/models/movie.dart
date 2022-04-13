@@ -26,7 +26,7 @@ Movie({
        id: json['id'],
        title: json['title'],
        overview: json['overview'],
-       poster_path: json['poster_path'],
+       poster_path: json['poster_path'] ?? '',
        release_date: json['release_date'],
        vote_avergae: json['vote_average'].toString()
    );
