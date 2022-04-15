@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_new_project/api.dart';
 import 'package:flutter_new_project/providers/movie_provider.dart';
+import 'package:flutter_new_project/widgets/popular_widget.dart';
 import 'package:flutter_new_project/widgets/tab_bar_widgets.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
@@ -75,7 +76,7 @@ final searchController = TextEditingController();
                     child: TabBarView(
                         physics: NeverScrollableScrollPhysics(),
                         children: [
-                          TabBarWidget(),
+                         PopularWidget(),
                           TabBarWidget(),
                           TabBarWidget(),
                         ]
