@@ -1,7 +1,11 @@
+import 'dart:io';
+
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:flutter_new_project/providers/image_provider.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:get/get.dart';
 import '../providers/login_provider.dart';
 
 
@@ -17,10 +21,10 @@ class AuthScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-        body: Consumer(
+    return Consumer(
           builder: (context, ref, child) {
             final isLogin = ref.watch(loginProvider);
+            final image = ref.watch(imageProvider).image;
             return Form(
               key: _form,
               child: Padding(
@@ -83,22 +87,45 @@ class AuthScreen extends StatelessWidget {
 
                   if(isLogin == false)  Padding(
                       padding: const EdgeInsets.symmetric(vertical: 20),
-                      child: Container(
-                        color: Colors.blueGrey,
-                        height: 150,
-                        width: 150,
-                        child: Center(child: Text('please select an image')),
+                      child: InkWell(
+                        onTap: (){
+                          ref.read(imageProvider).imagePick();
+                        },
+                        child: Container(
+                          decoration: BoxDecoration(
+                            border: Border.all(color: Colors.black)
+                          ),
+                          height: 150,
+                          width: 150,
+                          child:image == null ?  Center(child: Text('please select an image'))
+                          : Image.file(File(image.path), fit: BoxFit.cover,),
+                        ),
                       ),
                     ),
                     ElevatedButton(
                         onPressed: (){
                           _form.currentState!.save();
                           if(_form.currentState!.validate()){
-                            print(mailController.text);
-                            print(passwordController.text);
                             if(isLogin){
 
                             }else{
+
+                              if(image == null){
+                                Get.defaultDialog(
+                                  content: Text('required'),
+                                  title: 'Please select an image',
+                                  actions: [
+                                    TextButton(onPressed: (){
+                                      Navigator.of(context).pop();
+                                    }, child: Text('CLose'))
+                                  ]
+                                );
+
+                              }else{
+
+
+                              }
+
 
                             }
                           }
@@ -122,7 +149,6 @@ class AuthScreen extends StatelessWidget {
               ),
             );
           }
-        )
-    );
+        );
   }
 }
