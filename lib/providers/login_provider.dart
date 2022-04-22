@@ -7,13 +7,22 @@ final loginProvider = StateNotifierProvider<LoginProvider, bool>((ref) => LoginP
 class LoginProvider extends StateNotifier<bool>{
   LoginProvider() : super(true);
 
-
    void toggle(){
      state = !state;
    }
 
 
-
 }
 
+
+final loadingProvider = StateNotifierProvider<LoadingProvider, bool>((ref) => LoadingProvider());
+
+class LoadingProvider extends StateNotifier<bool>{
+  LoadingProvider() : super(false);
+
+  void toggle(){
+    state = !state;
+  }
+
+}
 

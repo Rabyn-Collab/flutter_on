@@ -13,8 +13,7 @@ class StatusScreen extends StatelessWidget {
     return Consumer(
         builder: (context, ref, child) {
           final userStream = ref.watch(authStream);
-          return Scaffold(
-            body: userStream.when(
+          return userStream.when(
                 data: (data){
                   if(data == null){
                      return AuthScreen();
@@ -22,12 +21,13 @@ class StatusScreen extends StatelessWidget {
                     return HomeScreen();
                   }
                 },
-                error: (err, stack) =>  Center(child: Text('$err',)),
-                loading: () => Center(child: CircularProgressIndicator(
-                  color: Colors.purple,
-                ),)
-            ),
-          );
+                error: (err, stack) =>  Scaffold(body: Center(child: Text('$err',))),
+                loading: () => Scaffold(
+                  body: Center(child: CircularProgressIndicator(
+                    color: Colors.purple,
+                  ),),
+                )
+            );
         }
     );
   }
