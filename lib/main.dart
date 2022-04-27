@@ -1,9 +1,5 @@
-import 'dart:async';
-
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_new_project/screens/auth_screen.dart';
-import 'package:flutter_new_project/screens/home_screen.dart';
 import 'package:flutter_new_project/screens/status_screen.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:get/get.dart';

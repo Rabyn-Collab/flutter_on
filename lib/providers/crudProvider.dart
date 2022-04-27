@@ -1,5 +1,6 @@
 import 'dart:io';
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_auth/firebase_auth.dart' as auth;
 import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter_new_project/models/post.dart';
 import 'package:flutter_new_project/models/user.dart';
@@ -11,7 +12,7 @@ import 'package:image_picker/image_picker.dart';
 final userStream = StreamProvider((ref) => CrudProvider().getUser());
 final postStream = StreamProvider((ref) => CrudProvider().getPosts());
 final crudProvider = Provider((ref) => CrudProvider());
-
+final  singleUserStream = StreamProvider.autoDispose((ref) => CrudProvider().getSingleUser());
 class CrudProvider{
 
 
@@ -66,7 +67,6 @@ class CrudProvider{
   List<Post> _getPostData(QuerySnapshot snapshot){
     return snapshot.docs.map((e) {
       final dat  = e.data() as Map<String, dynamic>;
-      print(dat);
       return Post(
           imageUrl: dat['imageUrl'],
           title: dat['title'],
@@ -79,6 +79,87 @@ class CrudProvider{
       );
     }).toList();
   }
+
+
+  Stream<User> getSingleUser(){
+    final uid = auth.FirebaseAuth.instance.currentUser!.uid;
+    final user = dbUser.where('userId', isEqualTo: uid).snapshots();
+    return user.map((event) => _getUserQuery(event));
+  }
+
+  User _getUserQuery(QuerySnapshot snapshot){
+    final user = snapshot.docs[0].data() as Map<String, dynamic>;
+    return  User.fromJson(user);
+  }
+
+
+
+  Future<void> likePost({required String postId, required Like likeData}) async{
+       try{
+         await dbPost.doc(postId).update({
+           'likes': likeData.toJson()
+         });
+
+       }on FirebaseException catch (err){
+         print(err);
+       }
+  }
+
+
+
+
+  Future<String> updatePost({required String title, required String detail,
+     XFile? file,required String postId, String? imageId}) async{
+    try{
+      if(file == null){
+        await dbPost.doc(postId).update({
+          'title': title,
+          'description': detail,
+        });
+
+      }else{
+        final ref = FirebaseStorage.instance.ref().child('userPosts/$imageId');
+        await ref.delete();
+        final imageId1 = DateTime.now().toString();
+        final ref1 = FirebaseStorage.instance.ref().child('userPosts/$imageId1');
+        final convertFile = File(file.path);
+        await ref1.putFile(convertFile);
+        final url = await ref1.getDownloadURL();
+        await dbPost.doc(postId).update({
+          'title': title,
+          'imageUrl': url,
+          'description': detail,
+          'imageId': imageId1,
+        });
+
+      }
+      return 'success';
+
+    }on FirebaseException catch (err){
+      return '${err.message}';
+    }
+
+  }
+
+
+
+  Future<String> removePost({required String postId, required String imageId}) async{
+    try{
+        final ref = FirebaseStorage.instance.ref().child('userPosts/$imageId');
+        await ref.delete();
+        await dbPost.doc(postId).delete();
+      return 'success';
+
+    }on FirebaseException catch (err){
+      return '${err.message}';
+    }
+
+  }
+
+
+
+
+
 
 
 
