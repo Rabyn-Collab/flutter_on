@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_new_project/models/post.dart';
 import 'package:flutter_new_project/models/user.dart';
 import 'package:flutter_new_project/providers/crudProvider.dart';
+import 'package:flutter_new_project/screens/detail_screen.dart';
 import 'package:flutter_new_project/widgets/drawer_widget.dart';
 import 'package:flutter_new_project/widgets/update_page.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -43,7 +44,7 @@ late User user;
                             itemBuilder: (context, index){
                             user = data.firstWhere((element) => element.userId == userId);
                             final dat = data[index];
-                              return Padding(
+                           return dat.userId == userId ? Container(): Padding(
                                 padding: const EdgeInsets.only(top: 20, left: 20),
                                 child: Column(
                                   children: [
@@ -139,11 +140,17 @@ late User user;
                                           }, icon: Icon(Icons.more_horiz_rounded))
                                         ],
                                       ),
-                                      Container(
-                                          height: 200,
-                                          width: double.infinity,
-                                          child: CachedNetworkImage(
-                                            imageUrl:  dat.imageUrl, fit: BoxFit.cover,)),
+                                      InkWell(
+                                        onTap: (){
+                                          Get.to(() => DetailScreen(user, dat), transition: Transition.leftToRight);
+                                        },
+                                        child: Container(
+                                            height: 200,
+                                            width: double.infinity,
+                                            child: CachedNetworkImage(
+                                              imageUrl:  dat.imageUrl, fit: BoxFit.cover,)
+                                        ),
+                                      ),
                                       SizedBox(height: 10,),
                                       Row(
                                         mainAxisAlignment: MainAxisAlignment.spaceBetween,

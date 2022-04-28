@@ -10,7 +10,7 @@ import 'package:image_picker/image_picker.dart';
 
 
 final userStream = StreamProvider((ref) => CrudProvider().getUser());
-final postStream = StreamProvider((ref) => CrudProvider().getPosts());
+final postStream = StreamProvider.autoDispose((ref) => CrudProvider().getPosts());
 final crudProvider = Provider((ref) => CrudProvider());
 final  singleUserStream = StreamProvider.autoDispose((ref) => CrudProvider().getSingleUser());
 class CrudProvider{
@@ -105,6 +105,15 @@ class CrudProvider{
        }
   }
 
+  Future<void> addComment({required String postId, required List<Comments> comments}) async{
+    try{
+      await dbPost.doc(postId).update({
+        'comments': comments.map((e) => e.toJson()).toList()
+      });
+    }on FirebaseException catch (err){
+      print(err);
+    }
+  }
 
 
 
