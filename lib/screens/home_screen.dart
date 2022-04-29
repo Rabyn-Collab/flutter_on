@@ -7,6 +7,7 @@ import 'package:flutter_new_project/providers/crudProvider.dart';
 import 'package:flutter_new_project/screens/detail_screen.dart';
 import 'package:flutter_new_project/widgets/drawer_widget.dart';
 import 'package:flutter_new_project/widgets/update_page.dart';
+import 'package:flutter_new_project/widgets/user_detail_widget.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:get/get.dart';
 
@@ -46,15 +47,20 @@ late User user;
                             final dat = data[index];
                            return dat.userId == userId ? Container(): Padding(
                                 padding: const EdgeInsets.only(top: 20, left: 20),
-                                child: Column(
-                                  children: [
-                                    CircleAvatar(
-                                      radius: 40,
-                                        backgroundImage: NetworkImage(dat.imageUrl),
-                                    ),
-                                    SizedBox(height: 7,),
-                                    Text(dat.username)
-                                  ],
+                                child: InkWell(
+                                  onTap: (){
+                                    Get.to(() => UserDetail(dat), transition: Transition.leftToRight);
+                                  },
+                                  child: Column(
+                                    children: [
+                                      CircleAvatar(
+                                        radius: 40,
+                                          backgroundImage: NetworkImage(dat.imageUrl),
+                                      ),
+                                      SizedBox(height: 7,),
+                                      Text(dat.username)
+                                    ],
+                                  ),
                                 ),
                               );
                             }
