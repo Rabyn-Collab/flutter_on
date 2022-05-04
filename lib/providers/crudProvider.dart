@@ -2,16 +2,18 @@ import 'dart:io';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart' as auth;
 import 'package:firebase_storage/firebase_storage.dart';
+import 'package:flutter_firebase_chat_core/flutter_firebase_chat_core.dart';
 import 'package:flutter_new_project/models/post.dart';
-import 'package:flutter_new_project/models/user.dart';
+import 'package:flutter_chat_types/flutter_chat_types.dart' as types;
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:image_picker/image_picker.dart';
 
 
 
-final userStream = StreamProvider((ref) => CrudProvider().getUser());
+final userStream = StreamProvider.autoDispose((ref) => FirebaseChatCore.instance.users());
 final postStream = StreamProvider.autoDispose((ref) => CrudProvider().getPosts());
 final crudProvider = Provider((ref) => CrudProvider());
+final roomStream = StreamProvider.autoDispose((ref) => FirebaseChatCore.instance.rooms());
 final  singleUserStream = StreamProvider.autoDispose((ref) => CrudProvider().getSingleUser());
 class CrudProvider{
 
@@ -20,12 +22,12 @@ class CrudProvider{
   CollectionReference dbPost = FirebaseFirestore.instance.collection('posts');
 
 
-  Stream<List<User>> getUser(){
+  Stream<List<types.User>> getUser(){
     return dbUser.snapshots().map((event) =>_getQuery(event));
   }
 
-  List<User> _getQuery(QuerySnapshot snapshot){
-     return snapshot.docs.map((e) => User.fromJson(e.data() as Map<String, dynamic>)).toList();
+  List<types.User> _getQuery(QuerySnapshot snapshot){
+     return snapshot.docs.map((e) => types.User.fromJson(e.data() as Map<String, dynamic>)).toList();
   }
 
 
@@ -81,20 +83,27 @@ class CrudProvider{
   }
 
 
-  Stream<User> getSingleUser(){
+  Stream<types.User> getSingleUser(){
     final uid = auth.FirebaseAuth.instance.currentUser!.uid;
-    final user = dbUser.where('userId', isEqualTo: uid).snapshots();
+    final user = dbUser.doc(uid).snapshots();
     return user.map((event) => _getUserQuery(event));
   }
 
-  User _getUserQuery(QuerySnapshot snapshot){
-    final user = snapshot.docs[0].data() as Map<String, dynamic>;
-    return  User.fromJson(user);
+  types.User _getUserQuery(DocumentSnapshot snapshot){
+    final user = snapshot.data() as Map<String, dynamic>;
+    return  types.User(
+      id: snapshot.id,
+      createdAt: (user['createdAt'] as Timestamp).millisecondsSinceEpoch,
+      firstName: user['firstName'],
+      lastName: user['lastName'],
+      imageUrl: user['imageUrl'],
+      metadata: user['metadata']
+    );
   }
 
 
 
-  Future<void> likePost({required String postId, required Like likeData}) async{
+  Future<void> likePost({required String postId, required Like likeData,}) async{
        try{
          await dbPost.doc(postId).update({
            'likes': likeData.toJson()
@@ -105,10 +114,13 @@ class CrudProvider{
        }
   }
 
-  Future<void> addComment({required String postId, required List<Comments> comments}) async{
+  Future<void> addComment({required String postId, required List<Comments> comments,
+   // required Comments comments
+  }) async{
     try{
       await dbPost.doc(postId).update({
         'comments': comments.map((e) => e.toJson()).toList()
+       // 'comments': FieldValue.arrayUnion([comments.toJson()])
       });
     }on FirebaseException catch (err){
       print(err);

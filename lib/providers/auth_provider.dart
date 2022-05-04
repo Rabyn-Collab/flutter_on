@@ -1,20 +1,20 @@
 import 'dart:io';
-import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:image_picker/image_picker.dart';
+import 'package:flutter_chat_types/flutter_chat_types.dart' as types;
+import 'package:flutter_firebase_chat_core/flutter_firebase_chat_core.dart';
 
-
-final authStream = StreamProvider((ref) => FirebaseAuth.instance.authStateChanges());
+final authStream = StreamProvider.autoDispose((ref) => FirebaseAuth.instance.authStateChanges());
 
 final authProvider = Provider.autoDispose((ref) => AuthProvider());
 
 
 class AuthProvider{
-  CollectionReference  dbUser = FirebaseFirestore.instance.collection('users');
 
-   Future<String> userSignUp({required String username, required String email,
+
+   Future<String> userSignUp({required String firstName, required String lastName, required String email,
     required String password, required XFile file}) async{
     try{
      final imageId = DateTime.now().toString();
@@ -23,12 +23,18 @@ class AuthProvider{
      await ref.putFile(convertFile);
      final url = await ref.getDownloadURL();
    final response = await FirebaseAuth.instance.createUserWithEmailAndPassword(email: email, password: password);
-         await dbUser.add({
-           'username': username,
-           'imageUrl': url,
-           'userId': response.user!.uid,
+     await FirebaseChatCore.instance.createUserInFirestore(
+       types.User(
+         firstName: firstName,
+         id: response.user!.uid,
+         imageUrl: url,
+         lastName: lastName,
+          metadata: {
            'email': email
-         });
+          },
+          createdAt: DateTime.now().millisecondsSinceEpoch,
+       ),
+     );
    return 'success';
     }on FirebaseAuthException catch(err){
        return '${err}';

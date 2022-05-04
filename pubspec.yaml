@@ -49,6 +49,13 @@ dependencies:
   firebase_storage: ^10.2.12
   firebase_messaging: ^11.2.13
   image_picker: ^0.8.5
+  flutter_chat_ui: ^1.5.8
+  flutter_firebase_chat_core: ^1.5.4
+  file_picker: ^4.5.1
+  open_file: ^3.2.1
+  mime: ^1.0.1
+  faker: ^2.0.0
+  flutter_local_notifications: ^9.4.1
 
 dev_dependencies:
   flutter_test:

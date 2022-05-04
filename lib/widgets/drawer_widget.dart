@@ -26,16 +26,16 @@ class DrawerWidget extends StatelessWidget {
                              colorFilter: ColorFilter.mode(
                                  Colors.black12,
                                  BlendMode.darken),
-                             image: NetworkImage(data.imageUrl),
+                             image: NetworkImage(data.imageUrl!),
                              fit: BoxFit.cover
                            )
                          ),
-                         child: Text(data.username, style: TextStyle(fontSize: 17, color: Colors.white),),
+                         child: Text(data.firstName!, style: TextStyle(fontSize: 17, color: Colors.white),),
                        ),
-                        ListTile(
-                          leading: Icon(Icons.email),
-                          title: Text(data.email),
-                        ),
+                        // ListTile(
+                        //   leading: Icon(Icons.email),
+                        //   title: Text(data.email),
+                        // ),
                         ListTile(
                           onTap: (){
                             Navigator.of(context).pop();

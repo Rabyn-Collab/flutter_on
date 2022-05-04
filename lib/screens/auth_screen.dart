@@ -14,7 +14,8 @@ import '../providers/login_provider.dart';
 
 class AuthScreen extends StatelessWidget {
 
-  final nameController = TextEditingController();
+  final firstNameController = TextEditingController();
+  final lastNameController = TextEditingController();
   final mailController = TextEditingController();
   final passwordController = TextEditingController();
 
@@ -39,19 +40,37 @@ class AuthScreen extends StatelessWidget {
              if(isLogin == false)    TextFormField(
                validator: (val){
                   if(val!.isEmpty){
-                    return 'please provide username';
+                    return 'please provide firstname';
                   }else if(val.length > 15){
                     return 'maximum character 15';
                   }
                   return null;
                },
-               controller: nameController,
+               controller: firstNameController,
                        decoration: InputDecoration(
-                          hintText: 'username',
+                          hintText: 'firstname',
                          contentPadding: EdgeInsets.symmetric(horizontal: 10, vertical: 10),
                          border: OutlineInputBorder()
                        ),
                      ),
+                      SizedBox(height: 30,),
+                      if(isLogin == false)    TextFormField(
+                        validator: (val){
+                          if(val!.isEmpty){
+                            return 'please provide lastname';
+                          }else if(val.length > 15){
+                            return 'maximum character 15';
+                          }
+                          return null;
+                        },
+                        controller: lastNameController,
+                        decoration: InputDecoration(
+                            hintText: 'lastname',
+                            contentPadding: EdgeInsets.symmetric(horizontal: 10, vertical: 10),
+                            border: OutlineInputBorder()
+                        ),
+                      ),
+
                       SizedBox(height: 30,),
                       TextFormField(
                         validator: (val){
@@ -140,7 +159,8 @@ class AuthScreen extends StatelessWidget {
                                   }else{
                                     ref.read(loadingProvider.notifier).toggle();
                                     final response = await ref.read(authProvider).userSignUp(
-                                        username: nameController.text.trim(),
+                                         firstName: firstNameController.text.trim(),
+                                        lastName: lastNameController.text.trim(),
                                         email: mailController.text.trim(),
                                         password: passwordController.text.trim(),
                                         file: image

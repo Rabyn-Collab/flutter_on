@@ -1,10 +1,13 @@
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:firebase_auth/firebase_auth.dart' as auth;
+import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_new_project/models/post.dart';
-import 'package:flutter_new_project/models/user.dart';
+import 'package:flutter_chat_types/flutter_chat_types.dart' as types;
+import 'package:flutter_new_project/notification_service.dart';
 import 'package:flutter_new_project/providers/crudProvider.dart';
 import 'package:flutter_new_project/screens/detail_screen.dart';
+import 'package:flutter_new_project/screens/recent_chats.dart';
 import 'package:flutter_new_project/widgets/drawer_widget.dart';
 import 'package:flutter_new_project/widgets/update_page.dart';
 import 'package:flutter_new_project/widgets/user_detail_widget.dart';
@@ -15,22 +18,95 @@ import 'package:get/get.dart';
 
 
 
+class HomeScreen extends StatefulWidget {
 
-class HomeScreen extends StatelessWidget {
+  @override
+  State<HomeScreen> createState() => _HomeScreenState();
+}
 
-late User user;
+class _HomeScreenState extends State<HomeScreen> {
+
+
+
+late types.User user;
 
   final userId = auth.FirebaseAuth.instance.currentUser!.uid;
+
+@override
+void initState() {
+  super.initState();
+
+  // 1. This method call when app in terminated state and you get a notification
+  // when you click on notification app open from terminated state and you can get notification data in this method
+
+  FirebaseMessaging.instance.getInitialMessage().then(
+        (message) {
+      print("FirebaseMessaging.instance.getInitialMessage");
+      if (message != null) {
+        print("New Notification");
+        // if (message.data['_id'] != null) {
+        //   Navigator.of(context).push(
+        //     MaterialPageRoute(
+        //       builder: (context) => DemoScreen(
+        //         id: message.data['_id'],
+        //       ),
+        //     ),
+        //   );
+        // }
+        LocalNotificationService.createanddisplaynotification(message);
+      }
+    },
+  );
+
+  // 2. This method only call when App in forground it mean app must be opened
+  FirebaseMessaging.onMessage.listen(
+        (message) {
+      print("FirebaseMessaging.onMessage.listen");
+      if (message.notification != null) {
+        print(message.notification!.title);
+        print(message.notification!.body);
+        print("message.data11 ${message.data}");
+        LocalNotificationService.createanddisplaynotification(message);
+
+      }
+    },
+  );
+
+  // 3. This method only call when App in background and not terminated(not closed)
+  FirebaseMessaging.onMessageOpenedApp.listen(
+        (message) {
+      print("FirebaseMessaging.onMessageOpenedApp.listen");
+      if (message.notification != null) {
+        print(message.notification!.title);
+        print(message.notification!.body);
+        print("message.data22 ${message.data['_id']}");
+        LocalNotificationService.createanddisplaynotification(message);
+      }
+    },
+  );
+  getToken();
+}
+Future getToken() async{
+  final token = await FirebaseMessaging.instance.getToken();
+  print(token);
+}
   @override
   Widget build(BuildContext context) {
     return Consumer(
       builder: (context, ref, child) {
         final userData = ref.watch(userStream);
+
         final postData = ref.watch(postStream);
         return Scaffold(
             appBar: AppBar(
               backgroundColor: Colors.purple,
               title: Text('Firebase project'),
+              actions: [
+                TextButton(
+                    onPressed: (){
+                   Get.to(() => RecentChat(), transition: Transition.leftToRight);
+                }, child: Text('Recent Chats', style: TextStyle(color: Colors.white),)),
+              ],
             ),
             drawer: DrawerWidget(),
             body:ListView(
@@ -43,9 +119,15 @@ late User user;
                           scrollDirection: Axis.horizontal,
                             itemCount: data.length,
                             itemBuilder: (context, index){
-                            user = data.firstWhere((element) => element.userId == userId);
+                            print(data);
+                            user = data.firstWhere((element) => element.id == userId, orElse: (){
+                              return types.User(
+                                id: ''
+                              );
+                            });
+                            print(user);
                             final dat = data[index];
-                           return dat.userId == userId ? Container(): Padding(
+                           return dat.id == userId ? Container(): Padding(
                                 padding: const EdgeInsets.only(top: 20, left: 20),
                                 child: InkWell(
                                   onTap: (){
@@ -55,10 +137,10 @@ late User user;
                                     children: [
                                       CircleAvatar(
                                         radius: 40,
-                                          backgroundImage: NetworkImage(dat.imageUrl),
+                                          backgroundImage: NetworkImage(dat.imageUrl!),
                                       ),
                                       SizedBox(height: 7,),
-                                      Text(dat.username)
+                                      Text(dat.firstName!)
                                     ],
                                   ),
                                 ),
@@ -148,7 +230,7 @@ late User user;
                                       ),
                                       InkWell(
                                         onTap: (){
-                                          Get.to(() => DetailScreen(user, dat), transition: Transition.leftToRight);
+                                          Get.to(() => DetailScreen(dat), transition: Transition.leftToRight);
                                         },
                                         child: Container(
                                             height: 200,
@@ -166,7 +248,7 @@ late User user;
                                             children: [
                                               IconButton(
                                                 onPressed: (){
-                                           if(dat.likData.usernames.contains(user.username)){
+                                           if(dat.likData.usernames.contains(user.firstName!)){
                                              ScaffoldMessenger.of(context).hideCurrentSnackBar();
                                           ScaffoldMessenger.of(context).showSnackBar(SnackBar(
                                             duration: Duration(milliseconds: 1500),
@@ -174,7 +256,7 @@ late User user;
                                            }else{
                                              final newData = Like(
                                                  likes: dat.likData.likes + 1,
-                                                 usernames: [...dat.likData.usernames, user.username]
+                                                 usernames: [...dat.likData.usernames, user.firstName!]
                                              );
                                              ref.read(crudProvider).likePost(postId: dat.id, likeData: newData);
                                            }
