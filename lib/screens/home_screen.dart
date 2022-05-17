@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_new_project/providers/auth_provider.dart';
 import 'package:flutter_new_project/providers/crudProvider.dart';
 import 'package:flutter_new_project/providers/login_provider.dart';
+import 'package:flutter_new_project/screens/detail_screen.dart';
 import 'package:flutter_new_project/widgets/create_page.dart';
 import 'package:flutter_new_project/widgets/drawer_widget.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -41,19 +42,26 @@ class HomeScreen extends StatelessWidget {
 
                         ),
                         itemBuilder: (context, index){
-                          return GridTile(
-                              child: ClipRRect(
-                                  borderRadius: BorderRadius.circular(20),
-                                  child: Image.network(data[index].image, fit: BoxFit.cover,)) ,
-                            footer: Container(
-                              height: 30,
-                              color: Colors.black38,
-                              child: Row(
-                                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                                children: [
-                               Text(data[index].product_name, style: TextStyle(color: Colors.white),),
-                               Text('Rs. ${data[index].price}', style: TextStyle(color: Colors.white),),
-                                ],
+                          return InkWell(
+                            onTap: (){
+                              Get.to(() => DetailScreen(data[index]), transition: Transition.leftToRight);
+                            },
+                            child: GridTile(
+                                child: ClipRRect(
+                                    borderRadius: BorderRadius.circular(20),
+                                    child: Hero(
+                                         tag: data[index].id,
+                                        child: Image.network(data[index].image, fit: BoxFit.cover,))) ,
+                              footer: Container(
+                                height: 30,
+                                color: Colors.black38,
+                                child: Row(
+                                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                  children: [
+                                 Text(data[index].product_name, style: TextStyle(color: Colors.white),),
+                                 Text('Rs. ${data[index].price}', style: TextStyle(color: Colors.white),),
+                                  ],
+                                ),
                               ),
                             ),
                           );

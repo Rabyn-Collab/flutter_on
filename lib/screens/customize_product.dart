@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_new_project/providers/crudProvider.dart';
+import 'package:flutter_new_project/widgets/update_page.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:get/get.dart';
 
@@ -29,7 +30,8 @@ class CustomScreen extends StatelessWidget {
                                 children: [
                                   IconButton(
                                       onPressed: (){
-
+                                        Navigator.of(context).pop();
+                                        Get.to(() => UpdatePage(data[index]));
                                       }, icon: Icon(Icons.edit)
                                   ),
                                   IconButton(
