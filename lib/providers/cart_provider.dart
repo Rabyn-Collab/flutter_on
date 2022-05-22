@@ -31,7 +31,7 @@ class CartProvider extends StateNotifier<List<CartItem>>{
        final item = state.firstWhere((element) => element.id == product.id, orElse: () => CartItem(
          price: 0,
            imageUrl: '', title: 'no-data', id: '', quantity: 0, total: 0));
-       if(item.title == 'no data'){
+       if(item.title == 'no-data'){
          final newCart = CartItem(
            price: product.price,
              imageUrl: product.image,
@@ -42,7 +42,7 @@ class CartProvider extends StateNotifier<List<CartItem>>{
          );
 
          Hive.box<CartItem>('carts').add(newCart);
-         state = [newCart];
+         state = [...state, newCart];
          return 'success';
        }
        return 'already add to cart';
@@ -84,7 +84,6 @@ class CartProvider extends StateNotifier<List<CartItem>>{
     state.forEach((element) {
       total = element.quantity * element.price;
     });
-
    return total;
 
   }

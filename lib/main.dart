@@ -16,7 +16,7 @@ void main () async {
   Hive.registerAdapter(UserAdapter());
   Hive.registerAdapter(CartItemAdapter());
   final userBox = await Hive.openBox<User>('user');
-  final cartBox = await Hive.openBox<User>('carts');
+  final cartBox = await Hive.openBox<CartItem>('carts');
  runApp(ProviderScope(
      overrides: [
        boxA.overrideWithValue(userBox.values.toList().cast<User>()),

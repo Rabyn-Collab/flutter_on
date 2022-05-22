@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_new_project/providers/auth_provider.dart';
 import 'package:flutter_new_project/providers/crudProvider.dart';
 import 'package:flutter_new_project/providers/login_provider.dart';
+import 'package:flutter_new_project/screens/cart_screen.dart';
 import 'package:flutter_new_project/screens/detail_screen.dart';
 import 'package:flutter_new_project/widgets/create_page.dart';
 import 'package:flutter_new_project/widgets/drawer_widget.dart';
@@ -26,6 +27,13 @@ class HomeScreen extends StatelessWidget {
             appBar: AppBar(
               backgroundColor: Colors.purple,
               title: Text('Sample Shop'),
+              actions: [
+                TextButton(
+                    onPressed: (){
+                      Get.to(()=> CartScreen(), transition: Transition.leftToRight);
+
+                    }, child: Text('Cart', style: TextStyle(color: Colors.white),))
+              ],
               
             ),
             body: Padding(
