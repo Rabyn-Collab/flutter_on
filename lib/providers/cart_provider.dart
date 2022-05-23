@@ -82,7 +82,7 @@ class CartProvider extends StateNotifier<List<CartItem>>{
   int get total{
    int total = 0;
     state.forEach((element) {
-      total = element.quantity * element.price;
+      total += element.quantity * element.price;
     });
    return total;
 

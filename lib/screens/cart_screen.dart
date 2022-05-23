@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_new_project/providers/cart_provider.dart';
+import 'package:flutter_new_project/providers/order_provider.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:get/get.dart';
 
@@ -90,8 +91,12 @@ class CartScreen extends StatelessWidget {
                               primary: Colors.black,
                               minimumSize: Size(375, 50)
                           ),
-                          onPressed: () {
-                          //  ref.read(cartProvider.notifier).clearBox();
+                          onPressed: ()  async{
+                            final response = await ref.read(orderProvider).orderCreate(total: total, carts: cartData);
+                            if(response == 'success'){
+                                ref.read(cartProvider.notifier).clearBox();
+                            }
+
                           }, child: Text('Check Out'),),
                     ],
                   ),
