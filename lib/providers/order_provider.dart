@@ -23,6 +23,7 @@ class OrderHistory extends StateNotifier<List<Order>>{
           options: Options(headers: {
             HttpHeaders.authorizationHeader: 'Bearer ${box[0].token}'
           }));
+      print(response.data);
       final data = (response.data as List).map((e) => Order.fromJson(e)).toList();
       state = data;
     } on DioError catch (err) {

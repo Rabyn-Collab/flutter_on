@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_new_project/location/location_check.dart';
 import 'package:flutter_new_project/models/cart_item.dart';
 import 'package:flutter_new_project/models/user.dart';
 import 'package:flutter_new_project/screens/status_screen.dart';
@@ -32,7 +33,8 @@ class Home extends StatelessWidget {
   Widget build(BuildContext context) {
     return GetMaterialApp(
       debugShowCheckedModeBanner: false,
-         home: StatusScreen(),
+         //home: StatusScreen(),
+      home: LocationCheck(),
     );
   }
 }

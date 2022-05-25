@@ -17,9 +17,10 @@ class Order{
 
   factory Order.fromJson(Map<String, dynamic> json){
     return Order(
-        total: json['total'],
+        total: json['amount'],
         dateTime: json['dateTime'],
-        products: json['products']);
+        products: (json['products'] as List).map((e) => CartItem.fromJson(e)).toList()
+    );
   }
 
 

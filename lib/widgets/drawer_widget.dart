@@ -2,7 +2,9 @@ import 'package:flutter/material.dart';
 import 'package:flutter_new_project/providers/auth_provider.dart';
 import 'package:flutter_new_project/providers/crudProvider.dart';
 import 'package:flutter_new_project/providers/login_provider.dart';
+import 'package:flutter_new_project/providers/order_provider.dart';
 import 'package:flutter_new_project/screens/customize_product.dart';
+import 'package:flutter_new_project/screens/order_screen.dart';
 import 'package:flutter_new_project/widgets/create_page.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:get/get.dart';
@@ -51,6 +53,15 @@ class DrawerWidget extends StatelessWidget {
                           },
                           leading: Icon(Icons.add),
                           title: Text('Customize product'),
+                        ),
+
+                        ListTile(
+                          onTap: (){
+                            Navigator.of(context).pop();
+                            Get.to(() => OrderHistoryPage(), transition: Transition.leftToRight);
+                          },
+                          leading: Icon(Icons.ac_unit),
+                          title: Text('order history'),
                         ),
                         ListTile(
                           onTap: (){
